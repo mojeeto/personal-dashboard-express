@@ -1,5 +1,7 @@
 import express from "express";
 import http from "http";
+import env from "./utils/env";
+import connectToDB from "./utils/db";
 
 async function main() {
   const app = express();
@@ -9,7 +11,8 @@ async function main() {
     console.log("OK");
   });
 
-  server.listen(8080);
+  await connectToDB();
+  server.listen(env.PORT);
 }
 
 main();
