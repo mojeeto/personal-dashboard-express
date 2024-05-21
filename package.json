@@ -1,0 +1,19 @@
+{
+  "name": "personal-dashboard-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "scripts": {
+    "dev": "nodemon main.ts"
+  },
+  "author": "Mojeeto[mojtaba01nouri@gmail.com]",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2"
+  }
+}
