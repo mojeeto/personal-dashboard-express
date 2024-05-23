@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { ValidationErrorType } from "../middlewares/validationMiddleware";
-import { hash } from "bcryptjs";
+import { hash, compare } from "bcryptjs";
 
 export function jsonRes(
   res: Response,
@@ -27,4 +27,11 @@ export function jsonRes(
 
 export async function hashPassword(password: string) {
   return await hash(password, 12);
+}
+
+export async function checkPassword(
+  givenPassword: string,
+  storedPassword: string,
+) {
+  return await compare(givenPassword, storedPassword);
 }
