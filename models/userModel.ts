@@ -8,11 +8,7 @@ export interface IUser extends Document {
   password: string;
 }
 
-export const userModelValidation = z.object({
-  forename: z.string({
-    required_error: "Forename is required!",
-  }),
-  surname: z.string(),
+export const userAuthZodObject = z.object({
   email: z
     .string({
       required_error: "Email is required!",
@@ -22,6 +18,21 @@ export const userModelValidation = z.object({
     required_error: "Password is required!",
   }),
 });
+
+export const userInfosZodObject = z.object({
+  forename: z.string({
+    required_error: "Forename is required!",
+  }),
+  surname: z.string(),
+});
+
+export const userResgierZodObject = userAuthZodObject
+  .merge(userInfosZodObject)
+  .required({
+    forename: true,
+    email: true,
+    password: true,
+  });
 
 const UserSchema = new Schema<IUser>(
   {
