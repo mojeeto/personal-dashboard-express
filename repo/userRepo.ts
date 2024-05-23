@@ -4,10 +4,8 @@ export async function findUserByEmail(email: string): Promise<IUser | null> {
   return await userModel.findOne({ email }).exec();
 }
 
-export async function createUser(data: TUser): Promise<IUser | null> {
+export async function createUser(data: TUser): Promise<IUser> {
   // check email is exists or not
-  let user = await findUserByEmail(data.email);
-  if (user) return null; // that means user is exists with that email
-  user = new userModel(data);
+  const user = new userModel(data);
   return await user.save();
 }
