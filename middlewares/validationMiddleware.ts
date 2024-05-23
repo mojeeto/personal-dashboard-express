@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import { userAuthZodObject } from "../models/userModel";
+import { userAuthZodObject, userResgierZodObject } from "../models/userModel";
 import { BaseMiddleware } from "./intypes";
 import { jsonRes } from "../utils/helper";
 
@@ -32,6 +32,31 @@ export const LoginValidation: BaseMiddleware = async (req, res, next) => {
     if (error instanceof ZodError) {
       const validationError = ZodErrorHandler(error);
       return jsonRes(res, "Validation Error", {
+        statusCode: 403,
+        validationData: validationError,
+      });
+    }
+    return jsonRes(res, "Something went wronge!", {
+      statusCode: 500,
+    });
+  }
+};
+
+export const ResgierValidation: BaseMiddleware = async (req, res, next) => {
+  try {
+    const { forename, surname, email, password } = req.body;
+    await userResgierZodObject.parseAsync({
+      forename,
+      surname,
+      email,
+      password,
+    });
+    return next();
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const validationError = ZodErrorHandler(error);
+      return jsonRes(res, "Validation Error", {
+        statusCode: 403,
         validationData: validationError,
       });
     }
