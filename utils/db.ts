@@ -3,7 +3,7 @@ import env from "./env";
 
 export default async function connectToDB() {
   try {
-    await mongoose.connect(env.DB_SCHEMA_NAME);
+    await mongoose.connect(env.DB_URL + env.DB_SCHEMA_NAME);
   } catch (err) {
     if (!(err instanceof Error)) {
       console.log("VERY BAD ERROR!");
