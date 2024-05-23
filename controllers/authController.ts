@@ -1,12 +1,31 @@
 import { BaseMiddleware } from "../middlewares/intypes";
 import { createUser, findUserByEmail } from "../repo/userRepo";
-import { hashPassword, jsonRes } from "../utils/helper";
+import { checkPassword, hashPassword, jsonRes } from "../utils/helper";
 
-export const login: BaseMiddleware = (req, res, next) => {
-  // check user email is exists or not
-  // check password is currect
-  // create jwt token and send it to user
-  jsonRes(res, "Login");
+export const login: BaseMiddleware = async (req, res, next) => {
+  try {
+    // check user email is exists or not
+    const { email, password } = req.body;
+    const user = await findUserByEmail(email);
+    if (!user)
+      return jsonRes(res, "Please register first!", { statusCode: 403 });
+    // check password is currect
+    const userPasswrod = user.password;
+    const resultOfPasswordChecking = await checkPassword(
+      password,
+      userPasswrod,
+    );
+    if (!resultOfPasswordChecking)
+      return jsonRes(res, "Email or Password is not correct!", {
+        statusCode: 403,
+      });
+    // create jwt token and send it to user
+    jsonRes(res, "Welcome");
+  } catch (err) {
+    return jsonRes(res, "Error while login to account.", {
+      statusCode: 500,
+    });
+  }
 };
 export const signup: BaseMiddleware = async (req, res, next) => {
   try {
