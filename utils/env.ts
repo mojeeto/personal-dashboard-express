@@ -6,6 +6,7 @@ import { cleanEnv, str } from "envalid";
 const env = cleanEnv(process.env, {
   PORT: str(),
 
+  DB_URL: str(),
   DB_SCHEMA_NAME: str(),
 });
 
