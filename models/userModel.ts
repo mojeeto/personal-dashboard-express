@@ -1,12 +1,14 @@
 import { model, Document, Schema } from "mongoose";
 import { z } from "zod";
 
-export interface IUser extends Document {
+export type TUser = {
   forename: string;
-  surname: string;
+  surname?: string;
   email: string;
   password: string;
-}
+};
+
+export interface IUser extends Document, TUser {}
 
 export const userAuthZodObject = z.object({
   email: z
