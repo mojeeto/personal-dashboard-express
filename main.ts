@@ -8,6 +8,7 @@ async function main() {
   const app = express();
   const server = http.createServer(app);
 
+  app.use(express.json());
   // main router
   app.use(router);
 
