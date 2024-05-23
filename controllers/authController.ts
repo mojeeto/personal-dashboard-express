@@ -11,4 +11,5 @@ export const signup: BaseMiddleware = (req, res, next) => {
   // check email is exists or not, if exists then register process failed
   // make password hash
   // return message that user created
+  jsonRes(res, "Sign-UP");
 };

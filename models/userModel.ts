@@ -19,12 +19,14 @@ export const userAuthZodObject = z.object({
   }),
 });
 
-export const userInfosZodObject = z.object({
-  forename: z.string({
-    required_error: "Forename is required!",
-  }),
-  surname: z.string(),
-});
+export const userInfosZodObject = z
+  .object({
+    forename: z.string({
+      required_error: "Forename is required!",
+    }),
+    surname: z.string(),
+  })
+  .partial();
 
 export const userResgierZodObject = userAuthZodObject
   .merge(userInfosZodObject)
