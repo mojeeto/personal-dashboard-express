@@ -8,6 +8,8 @@ const env = cleanEnv(process.env, {
 
   DB_URL: str(),
   DB_SCHEMA_NAME: str(),
+
+  JWT_TOKEN_SECRET: str(),
 });
 
 export default env;

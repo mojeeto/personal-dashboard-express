@@ -1,6 +1,8 @@
 import { Response } from "express";
 import { ValidationErrorType } from "../middlewares/validationMiddleware";
 import { hash, compare } from "bcryptjs";
+import { sign } from "jsonwebtoken";
+import env from "./env";
 
 export function jsonRes(
   res: Response,
@@ -34,4 +36,8 @@ export async function checkPassword(
   storedPassword: string,
 ) {
   return await compare(givenPassword, storedPassword);
+}
+
+export function jwtCreateToken(data: string | object) {
+  return sign(data, env.JWT_TOKEN_SECRET);
 }

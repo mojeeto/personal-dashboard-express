@@ -1,6 +1,11 @@
 import { BaseMiddleware } from "../middlewares/intypes";
 import { createUser, findUserByEmail } from "../repo/userRepo";
-import { checkPassword, hashPassword, jsonRes } from "../utils/helper";
+import {
+  checkPassword,
+  hashPassword,
+  jsonRes,
+  jwtCreateToken,
+} from "../utils/helper";
 
 export const login: BaseMiddleware = async (req, res, next) => {
   try {
@@ -20,7 +25,14 @@ export const login: BaseMiddleware = async (req, res, next) => {
         statusCode: 403,
       });
     // create jwt token and send it to user
-    jsonRes(res, "Welcome");
+    const jwtToken = jwtCreateToken({
+      email: user.email,
+    });
+    return jsonRes(res, "Welcome", {
+      data: {
+        jwt_token: jwtToken,
+      },
+    });
   } catch (err) {
     return jsonRes(res, "Error while login to account.", {
       statusCode: 500,
