@@ -3,12 +3,13 @@ import currencyModel, { ICurrency } from "../models/currencyModel";
 export async function fetchAllCurrencies() {
   return await currencyModel.find().exec();
 }
-export async function fetchCurrency(
+export async function fetchCurrencyByCurrency(
   currency: string,
+  userId: string,
 ): Promise<ICurrency | null> {
-  return await currencyModel.findOne({ currency }).exec();
+  return await currencyModel.findOne({ currency, user_id: userId }).exec();
 }
-export async function addCurrency(
+export async function createCurrency(
   name: string,
   currency: string,
   userId: string,
@@ -21,7 +22,7 @@ export async function addCurrency(
   return await currencyInstance.save();
 }
 
-export async function deleteCurrency(
+export async function deleteSpecificCurrency(
   name: string,
   currency: string,
   userId: string,
