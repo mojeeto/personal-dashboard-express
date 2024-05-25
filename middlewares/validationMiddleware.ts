@@ -128,12 +128,16 @@ export const currencyValidation: BaseMiddleware = async (req, res, next) => {
   try {
     const { name, currency } = req.body;
     const method = req.method.toLowerCase();
-    if (!["post", "delete"].includes(method))
-      return jsonRes(res, "Bad Method!", {
-        statusCode: 403,
-      });
-    await CurrencyZodObject.parseAsync(req.body);
-    return next();
+    if (["post", "delete"].includes(method)) {
+      await CurrencyZodObject.required({ name: true }).parseAsync(req.body);
+      return next();
+    } else if (method === "get") {
+      await CurrencyZodObject.parseAsync(req.body);
+      return next();
+    }
+    return jsonRes(res, "Bad Method!", {
+      statusCode: 403,
+    });
   } catch (error) {
     if (error instanceof ZodError) {
       const validationError = ZodErrorHandler(error);

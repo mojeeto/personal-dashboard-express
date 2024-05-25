@@ -26,6 +26,7 @@ export const postCurrency: BaseMiddleware = async (req, res, _next) => {
   const { name, currency } = req.body;
   try {
     const currencyFinded = await fetchCurrencyByCurrency(currency, req.userId!);
+    console.log(currencyFinded);
     if (currencyFinded)
       return jsonRes(res, "Currecy is exist!", { statusCode: 403 });
     await createCurrency(name, currency, req.userId!);

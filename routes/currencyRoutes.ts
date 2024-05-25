@@ -10,8 +10,8 @@ import { currencyValidation } from "../middlewares/validationMiddleware";
 const currencyRouter = Router();
 
 currencyRouter.get("/currencies", getCurrencies);
-currencyRouter.post("/currency", getCurrency);
+currencyRouter.get("/currency", currencyValidation, getCurrency);
 currencyRouter.post("/currency", currencyValidation, postCurrency);
-currencyRouter.delete("currency", currencyValidation, deleteCurreny);
+currencyRouter.delete("/currency", currencyValidation, deleteCurreny);
 
 export default currencyRouter;

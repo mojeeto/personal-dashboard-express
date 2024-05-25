@@ -10,14 +10,18 @@ export type TCurrency = {
 
 export interface ICurrency extends Document, TCurrency {}
 
-export const CurrencyZodObject = z.object({
-  name: z.string({
-    required_error: "Name for currency is required! Like (IRAN Currency)",
-  }),
-  currency: z.string({
-    required_error: "Currency word is required! Like (IRR for iran)",
-  }),
-});
+export const CurrencyZodObject = z
+  .object({
+    name: z.string({
+      required_error: "Name for currency is required! Like (IRAN Currency)",
+    }),
+    currency: z.string({
+      required_error: "Currency word is required! Like (IRR for iran)",
+    }),
+  })
+  .partial({
+    name: true,
+  });
 
 const CurrencySchema = new Schema<ICurrency>({
   name: {
