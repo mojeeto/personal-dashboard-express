@@ -35,6 +35,7 @@ const CurrencySchema = new Schema<ICurrency>({
   user_id: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: "User",
   },
 });
 
