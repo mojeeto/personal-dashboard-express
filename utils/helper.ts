@@ -50,7 +50,7 @@ export async function isJWTValid(jwt_token: string) {
     };
     const userEmail = verifyResult.email;
     const user = await findUserByEmail(userEmail);
-    if (user) return true;
+    if (user) return user;
   } catch {}
-  return false;
+  return null;
 }

@@ -76,9 +76,10 @@ export const isAuthenticated: BaseMiddleware = async (req, res, next) => {
     const { jwt_token } = req.body;
     await isAuthenticatedZodObject.parseAsync({ jwt_token });
     // check jwt_token is valid or not
-    const result = await isJWTValid(jwt_token);
-    if (!result)
+    const user = await isJWTValid(jwt_token);
+    if (!user)
       return jsonRes(res, "JWT token is not valid, Please login first!");
+    req.userId = user.id;
     return next();
   } catch (error) {
     if (error instanceof ZodError) {
