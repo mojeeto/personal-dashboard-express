@@ -7,11 +7,16 @@ export type TCategory = {
   user_id: PopulatedDoc<IUser & Document>;
 };
 
-export const CategoryZodObject = z.object({
-  title: z.string({
-    required_error: "Title is required for creating new category!",
-  }),
-});
+export const CategoryZodObject = z
+  .object({
+    title: z.string({
+      required_error: "Title is required for creating new category!",
+    }),
+    new_title: z.string({
+      required_error: "For update category, new_title field is required!",
+    }),
+  })
+  .partial({ new_title: true });
 
 interface ICategory extends Document, TCategory {}
 

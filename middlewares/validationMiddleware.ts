@@ -97,10 +97,17 @@ export const isAuthenticated: BaseMiddleware = async (req, res, next) => {
 
 export const CategoryValidation: BaseMiddleware = async (req, res, next) => {
   try {
-    const { title } = req.body;
-    await CategoryZodObject.parseAsync({
-      title,
-    });
+    const { title, new_title } = req.body;
+    const method = req.method.toLowerCase();
+    if (["post", "delete"].includes(method)) {
+      await CategoryZodObject.parseAsync({
+        title,
+      });
+    } else if (method === "patch") {
+      await CategoryZodObject.required({ new_title: true });
+    } else {
+      return jsonRes(res, "Bad method!", { statusCode: 404 });
+    }
     return next();
   } catch (error) {
     if (error instanceof ZodError) {
