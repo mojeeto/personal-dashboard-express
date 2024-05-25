@@ -7,6 +7,7 @@ import {
 import { BaseMiddleware } from "./intypes";
 import { jsonRes, isJWTValid } from "../utils/helper";
 import { CategoryZodObject } from "../models/catergoryModel";
+import { CurrencyZodObject } from "../models/currencyModel";
 
 export type ValidationErrorType = {
   field_name: string;
@@ -108,6 +109,30 @@ export const CategoryValidation: BaseMiddleware = async (req, res, next) => {
     } else {
       return jsonRes(res, "Bad method!", { statusCode: 404 });
     }
+    return next();
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const validationError = ZodErrorHandler(error);
+      return jsonRes(res, "Validation Error", {
+        statusCode: 403,
+        validationData: validationError,
+      });
+    }
+    return jsonRes(res, "Something went wronge!", {
+      statusCode: 500,
+    });
+  }
+};
+
+export const currencyValidation: BaseMiddleware = async (req, res, next) => {
+  try {
+    const { name, currency } = req.body;
+    const method = req.method.toLowerCase();
+    if (!["post", "delete"].includes(method))
+      return jsonRes(res, "Bad Method!", {
+        statusCode: 403,
+      });
+    await CurrencyZodObject.parseAsync(req.body);
     return next();
   } catch (error) {
     if (error instanceof ZodError) {
