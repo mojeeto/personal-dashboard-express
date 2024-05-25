@@ -38,6 +38,12 @@ export const userResgierZodObject = userAuthZodObject
     password: true,
   });
 
+export const isAuthenticatedZodObject = z.object({
+  jwt_token: z.string({
+    required_error: "Please login first!",
+  }),
+});
+
 const UserSchema = new Schema<IUser>(
   {
     forename: {
@@ -59,6 +65,6 @@ const UserSchema = new Schema<IUser>(
   },
 );
 
-const userModel = model<IUser>("users", UserSchema);
+const userModel = model<IUser>("User", UserSchema);
 
 export default userModel;
