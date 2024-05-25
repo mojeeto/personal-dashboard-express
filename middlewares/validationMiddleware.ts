@@ -1,7 +1,12 @@
 import { ZodError } from "zod";
-import { userAuthZodObject, userResgierZodObject } from "../models/userModel";
+import {
+  isAuthenticatedZodObject,
+  userAuthZodObject,
+  userResgierZodObject,
+} from "../models/userModel";
 import { BaseMiddleware } from "./intypes";
-import { jsonRes } from "../utils/helper";
+import { jsonRes, isJWTValid } from "../utils/helper";
+import { CategoryZodObject } from "../models/catergoryModel";
 
 export type ValidationErrorType = {
   field_name: string;
@@ -50,6 +55,50 @@ export const ResgierValidation: BaseMiddleware = async (req, res, next) => {
       surname,
       email,
       password,
+    });
+    return next();
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const validationError = ZodErrorHandler(error);
+      return jsonRes(res, "Validation Error", {
+        statusCode: 403,
+        validationData: validationError,
+      });
+    }
+    return jsonRes(res, "Something went wronge!", {
+      statusCode: 500,
+    });
+  }
+};
+
+export const isAuthenticated: BaseMiddleware = async (req, res, next) => {
+  try {
+    const { jwt_token } = req.body;
+    await isAuthenticatedZodObject.parseAsync({ jwt_token });
+    // check jwt_token is valid or not
+    const result = await isJWTValid(jwt_token);
+    if (!result)
+      return jsonRes(res, "JWT token is not valid, Please login first!");
+    return next();
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const validationError = ZodErrorHandler(error);
+      return jsonRes(res, "Validation Error", {
+        statusCode: 403,
+        validationData: validationError,
+      });
+    }
+    return jsonRes(res, "Something went wronge!", {
+      statusCode: 500,
+    });
+  }
+};
+
+export const CategoryValidation: BaseMiddleware = async (req, res, next) => {
+  try {
+    const { title } = req.body;
+    await CategoryZodObject.parseAsync({
+      title,
     });
     return next();
   } catch (error) {

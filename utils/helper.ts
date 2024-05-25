@@ -1,8 +1,9 @@
 import { Response } from "express";
 import { ValidationErrorType } from "../middlewares/validationMiddleware";
 import { hash, compare } from "bcryptjs";
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 import env from "./env";
+import { findUserByEmail } from "../repo/userRepo";
 
 export function jsonRes(
   res: Response,
@@ -40,4 +41,16 @@ export async function checkPassword(
 
 export function jwtCreateToken(data: string | object) {
   return sign(data, env.JWT_TOKEN_SECRET);
+}
+
+export async function isJWTValid(jwt_token: string) {
+  try {
+    const verifyResult = verify(jwt_token, env.JWT_TOKEN_SECRET) as {
+      email: string;
+    };
+    const userEmail = verifyResult.email;
+    const user = await findUserByEmail(userEmail);
+    if (user) return true;
+  } catch {}
+  return false;
 }
