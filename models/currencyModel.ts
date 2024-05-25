@@ -8,7 +8,7 @@ export type TCurrency = {
   user_id: PopulatedDoc<IUser & Document>;
 };
 
-interface ICurrency extends Document, TCurrency {}
+export interface ICurrency extends Document, TCurrency {}
 
 export const CurrencyZodObject = z.object({
   name: z.string({
