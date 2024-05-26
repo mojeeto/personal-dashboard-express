@@ -1,4 +1,4 @@
-import { ZodError } from "zod";
+import { ZodError, z } from "zod";
 import {
   isAuthenticatedZodObject,
   userAuthZodObject,
@@ -138,6 +138,33 @@ export const currencyValidation: BaseMiddleware = async (req, res, next) => {
     return jsonRes(res, "Bad Method!", {
       statusCode: 403,
     });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const validationError = ZodErrorHandler(error);
+      return jsonRes(res, "Validation Error", {
+        statusCode: 403,
+        validationData: validationError,
+      });
+    }
+    return jsonRes(res, "Something went wronge!", {
+      statusCode: 500,
+    });
+  }
+};
+
+export const IdParamValidation: BaseMiddleware = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await z
+      .object({
+        id: z
+          .string({
+            required_error: "Id is required for this path!",
+          })
+          .trim(),
+      })
+      .parseAsync({ id });
+    return next();
   } catch (error) {
     if (error instanceof ZodError) {
       const validationError = ZodErrorHandler(error);
