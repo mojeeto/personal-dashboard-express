@@ -18,7 +18,7 @@ export const CategoryZodObject = z
   })
   .partial({ new_title: true });
 
-interface ICategory extends Document, TCategory {}
+export interface ICategory extends Document, TCategory {}
 
 const CategorySchema = new Schema<ICategory>({
   title: {
