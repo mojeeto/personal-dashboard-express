@@ -8,6 +8,7 @@ import { BaseMiddleware } from "./intypes";
 import { jsonRes, isJWTValid } from "../utils/helper";
 import { CategoryZodObject } from "../models/catergoryModel";
 import { CurrencyZodObject } from "../models/currencyModel";
+import { contactZodObject } from "../models/contactModel";
 
 export type ValidationErrorType = {
   field_name: string;
@@ -105,7 +106,10 @@ export const CategoryValidation: BaseMiddleware = async (req, res, next) => {
         title,
       });
     } else if (method === "patch") {
-      await CategoryZodObject.required({ new_title: true });
+      await CategoryZodObject.required({ new_title: true }).parseAsync({
+        title,
+        new_title,
+      });
     } else {
       return jsonRes(res, "Bad method!", { statusCode: 404 });
     }
@@ -129,10 +133,13 @@ export const currencyValidation: BaseMiddleware = async (req, res, next) => {
     const { name, currency } = req.body;
     const method = req.method.toLowerCase();
     if (["post", "delete"].includes(method)) {
-      await CurrencyZodObject.required({ name: true }).parseAsync(req.body);
+      await CurrencyZodObject.required({ name: true }).parseAsync({
+        name,
+        currency,
+      });
       return next();
     } else if (method === "get") {
-      await CurrencyZodObject.parseAsync(req.body);
+      await CurrencyZodObject.parseAsync({ name, currency });
       return next();
     }
     return jsonRes(res, "Bad Method!", {
@@ -165,6 +172,35 @@ export const IdParamValidation: BaseMiddleware = async (req, res, next) => {
       })
       .parseAsync({ id });
     return next();
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const validationError = ZodErrorHandler(error);
+      return jsonRes(res, "Validation Error", {
+        statusCode: 403,
+        validationData: validationError,
+      });
+    }
+    return jsonRes(res, "Something went wronge!", {
+      statusCode: 500,
+    });
+  }
+};
+
+export const ContactValidation: BaseMiddleware = async (req, res, next) => {
+  try {
+    const { name, phoneNumber, bankCartNumber } = req.body;
+    const method = req.method.toLowerCase();
+    if (["post", "patch"].includes(method)) {
+      await contactZodObject.parseAsync({
+        name,
+        phoneNumber,
+        bankCartNumber,
+      });
+      return next();
+    }
+    return jsonRes(res, "Bad Method!", {
+      statusCode: 403,
+    });
   } catch (error) {
     if (error instanceof ZodError) {
       const validationError = ZodErrorHandler(error);
