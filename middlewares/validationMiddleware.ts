@@ -1,4 +1,4 @@
-import { ZodError, z } from "zod";
+import { ZodError, ZodIssueCode, z } from "zod";
 import {
   isAuthenticatedZodObject,
   userAuthZodObject,
@@ -9,6 +9,9 @@ import { jsonRes, isJWTValid } from "../utils/helper";
 import { CategoryZodObject } from "../models/catergoryModel";
 import { CurrencyZodObject } from "../models/currencyModel";
 import { contactZodObject } from "../models/contactModel";
+import { walletZodValidation } from "../models/walletModel";
+import { fetchCategoryById } from "../repo/categoryRepo";
+import { fetchContactById } from "../repo/contactRepo";
 
 export type ValidationErrorType = {
   field_name: string;
@@ -201,6 +204,73 @@ export const ContactValidation: BaseMiddleware = async (req, res, next) => {
     return jsonRes(res, "Bad Method!", {
       statusCode: 403,
     });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const validationError = ZodErrorHandler(error);
+      return jsonRes(res, "Validation Error", {
+        statusCode: 403,
+        validationData: validationError,
+      });
+    }
+    return jsonRes(res, "Something went wronge!", {
+      statusCode: 500,
+    });
+  }
+};
+
+export const WalletValidation: BaseMiddleware = async (req, res, next) => {
+  try {
+    const { name, price, category_id, contact_id, forContacts } = req.body;
+    await walletZodValidation
+      .superRefine(async (args, ctx) => {
+        const { price, category_id, contact_id, forContacts } = args;
+        const userId = req.userId!;
+        if (isNaN(price))
+          ctx.addIssue({
+            code: ZodIssueCode.custom,
+            message: "Price is not number!",
+          });
+        const category = await fetchCategoryById(category_id, userId);
+        if (!category)
+          ctx.addIssue({
+            code: ZodIssueCode.custom,
+            message: "Category is not exists!",
+          });
+        const contact = await fetchContactById(contact_id, userId);
+        if (!contact)
+          ctx.addIssue({
+            code: ZodIssueCode.custom,
+            message: "Contact is not exists!",
+          });
+        if (forContacts.length === 0) {
+          ctx.ZodIssueCode({
+            code: ZodIssueCode.custom,
+            message: "Contact for is required!",
+          });
+        }
+        if (forContacts.length !== new Set(forContacts).size) {
+          ctx.addIssue({
+            code: ZodIssueCode.custom,
+            message: "Duplicate Contacts in ForContacts is not allowed!",
+          });
+        }
+        forContacts.map(async (contactId) => {
+          const fetchContact = await fetchContactById(contactId);
+          if (!fetchContact) {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: `Contact with ID{${contactId}} is not exists!`,
+            });
+          }
+        });
+      })
+      .parseAsync({
+        name,
+        price,
+        category_id,
+        contact_id,
+        forContacts,
+      });
   } catch (error) {
     if (error instanceof ZodError) {
       const validationError = ZodErrorHandler(error);

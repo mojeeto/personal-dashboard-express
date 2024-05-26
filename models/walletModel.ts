@@ -1,7 +1,7 @@
 import { Document, PopulatedDoc, model, Schema } from "mongoose";
 import { ICategory } from "./catergoryModel";
 import { IContact } from "./contactModel";
-import { z } from "zod";
+import { ZodIssueCode, z } from "zod";
 
 /*
  * Wallet Model
@@ -17,37 +17,30 @@ export type TWallet = {
   price: number;
   category_id: PopulatedDoc<ICategory & Document>;
   contact_id: PopulatedDoc<IContact & Document>;
-  for: PopulatedDoc<IContact & Document>[];
+  forContacts: PopulatedDoc<IContact & Document>[];
 };
 
 export interface IWallet extends Document, TWallet {}
 
-const walletZodValidation = z
-  .object({
-    title: z.string({
-      required_error: "Subject of which you buy is required!",
+export const walletZodValidation = z.object({
+  title: z.string({
+    required_error: "Subject of which you buy is required!",
+  }),
+  price: z.number({
+    required_error: "Price is required!",
+  }),
+  category_id: z.string({
+    required_error: "Category is required!",
+  }),
+  contact_id: z.string({
+    required_error: "Seller is required!",
+  }),
+  forContacts: z.array(
+    z.string({
+      required_error: "For who buy for ids is required!",
     }),
-    price: z.number({
-      required_error: "Price is required!",
-    }),
-    category_id: z.string({
-      required_error: "Category is required!",
-    }),
-    contact_id: z.string({
-      required_error: "Seller is required!",
-    }),
-    for: z.array(
-      z.string({
-        required_error: "For who buy for ids is required!",
-      }),
-    ),
-  })
-  .superRefine(async (args, ctx) => {
-    // check price is valid
-    // check category_id is exists
-    // check contact_id is exists
-    // check length of For contactsList
-  });
+  ),
+});
 
 const WalletSchema = new Schema<IWallet>(
   {
@@ -67,7 +60,7 @@ const WalletSchema = new Schema<IWallet>(
       type: Schema.Types.ObjectId,
       required: true,
     },
-    for: {
+    forContacts: {
       type: [Schema.Types.ObjectId],
       required: true,
     },
