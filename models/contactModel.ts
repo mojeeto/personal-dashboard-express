@@ -9,6 +9,8 @@ export type TContact = {
   user_id: PopulatedDoc<IUser & Document>;
 };
 
+export type ST_TContact = Omit<TContact, "user_id">;
+
 export interface IContact extends Document, TContact {}
 
 export const contactZodObject = z
