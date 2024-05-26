@@ -271,6 +271,7 @@ export const WalletValidation: BaseMiddleware = async (req, res, next) => {
         contact_id,
         forContacts,
       });
+    return next();
   } catch (error) {
     if (error instanceof ZodError) {
       const validationError = ZodErrorHandler(error);
