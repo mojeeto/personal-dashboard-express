@@ -3,15 +3,16 @@ import { IUser } from "./userModel";
 import { z } from "zod";
 
 export type TContact = {
+  id: string;
   name: string;
   phoneNumber?: string;
   bankCartNumber?: string;
   user_id: PopulatedDoc<IUser & Document>;
 };
 
-export type ST_TContact = Omit<TContact, "user_id">;
+export type ST_TContact = Omit<TContact, "user_id" | "id">;
 
-export interface IContact extends Document, TContact {}
+export interface IContact extends Document, Omit<TContact, "id"> {}
 
 export const contactZodObject = z
   .object({
