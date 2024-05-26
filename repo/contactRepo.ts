@@ -23,7 +23,7 @@ export async function updateContact(
     .exec();
 }
 
-export async function deleteContact(contactId: string, userId: string) {
+export async function deleteContactById(contactId: string, userId: string) {
   return await contactModel
     .deleteOne({ id: contactId, user_id: userId })
     .exec();
