@@ -1,7 +1,7 @@
 import currencyModel, { ICurrency } from "../models/currencyModel";
 
-export async function fetchAllCurrencies() {
-  return await currencyModel.find().exec();
+export async function fetchAllCurrencies(userId: string) {
+  return await currencyModel.find({ user_id: userId }).exec();
 }
 export async function fetchCurrencyByCurrency(
   currency: string,

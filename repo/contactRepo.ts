@@ -1,11 +1,11 @@
 import contactModel, { ST_TContact } from "../models/contactModel";
 
-export async function fetchAllContacts() {
-  return await contactModel.find().exec();
+export async function fetchAllContacts(userId: string) {
+  return await contactModel.find({ user_id: userId }).exec();
 }
 
-export async function fetchContactById(id: string) {
-  return await contactModel.findOne({ id }).exec();
+export async function fetchContactById(id: string, userId: string) {
+  return await contactModel.findOne({ id, user_id: userId }).exec();
 }
 
 export async function createContact(data: ST_TContact, userId: string) {
@@ -23,6 +23,8 @@ export async function updateContact(
     .exec();
 }
 
-export async function deleteContact(contactId: string) {
-  return await contactModel.deleteOne({ id: contactId }).exec();
+export async function deleteContact(contactId: string, userId: string) {
+  return await contactModel
+    .deleteOne({ id: contactId, user_id: userId })
+    .exec();
 }

@@ -8,8 +8,8 @@ import {
 } from "../repo/categoryRepo";
 import { jsonRes } from "../utils/helper";
 
-export const getCategories: BaseMiddleware = async (_req, res, _next) => {
-  const categories = await fetchAllCategories();
+export const getCategories: BaseMiddleware = async (req, res, _next) => {
+  const categories = await fetchAllCategories(req.userId!);
   jsonRes(res, "Get All Categories", { data: categories });
 };
 

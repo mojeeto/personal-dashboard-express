@@ -1,7 +1,7 @@
 import categoryModel from "../models/catergoryModel";
 
-export async function fetchAllCategories() {
-  return await categoryModel.find().exec();
+export async function fetchAllCategories(userId: string) {
+  return await categoryModel.find({ user_id: userId }).exec();
 }
 
 export async function fetchCategoryByTitle(title: string, userId: string) {

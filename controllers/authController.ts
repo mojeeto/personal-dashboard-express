@@ -7,7 +7,7 @@ import {
   jwtCreateToken,
 } from "../utils/helper";
 
-export const login: BaseMiddleware = async (req, res, next) => {
+export const login: BaseMiddleware = async (req, res, _next) => {
   try {
     // check user email is exists or not
     const { email, password } = req.body;
@@ -39,7 +39,7 @@ export const login: BaseMiddleware = async (req, res, next) => {
     });
   }
 };
-export const signup: BaseMiddleware = async (req, res, next) => {
+export const signup: BaseMiddleware = async (req, res, _next) => {
   try {
     // check email is exists or not, if exists then register process failed
     const { forename, surname, email, password } = req.body;

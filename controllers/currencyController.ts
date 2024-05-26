@@ -7,8 +7,8 @@ import {
 } from "../repo/currencyRepo";
 import { jsonRes } from "../utils/helper";
 
-export const getCurrencies: BaseMiddleware = async (_req, res, _next) => {
-  const currencies = await fetchAllCurrencies();
+export const getCurrencies: BaseMiddleware = async (req, res, _next) => {
+  const currencies = await fetchAllCurrencies(req.userId!);
   jsonRes(res, "All Currencies", { data: currencies });
 };
 
