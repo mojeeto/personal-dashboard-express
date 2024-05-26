@@ -4,6 +4,10 @@ export async function fetchAllCategories(userId: string) {
   return await categoryModel.find({ user_id: userId }).exec();
 }
 
+export async function fetchCategoryById(categoryId: string, userId: string) {
+  return await categoryModel.find({ id: categoryId, user_id: userId }).exec();
+}
+
 export async function fetchCategoryByTitle(title: string, userId: string) {
   return await categoryModel.findOne({ title, user_id: userId }).exec();
 }
