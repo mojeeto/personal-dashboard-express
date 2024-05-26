@@ -58,8 +58,6 @@ export const signup: BaseMiddleware = async (req, res, _next) => {
     });
     if (!user)
       return jsonRes(res, "Creating User Failed.", { statusCode: 500 });
-    //TODO::add new user as contact to contactModel
-
     // return message that user created
     jsonRes(res, "User created!", {
       statusCode: 201,
