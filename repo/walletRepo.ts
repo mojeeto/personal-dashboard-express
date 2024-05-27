@@ -20,14 +20,21 @@ export async function fetchAllIncomeRecords(userId: string) {
     .exec();
 }
 
-export async function createNewWalletRecord(data: TWallet) {
-  const newRecord = new walletModel(data);
+export async function createNewWalletRecord(
+  data: Omit<TWallet, "user_id">,
+  userId: string,
+) {
+  const newRecord = new walletModel({ ...data, user_id: userId });
   return await newRecord.save();
 }
 
-export async function updateWalletRecordById(recordId: string, data: TWallet) {
+export async function updateWalletRecordById(
+  recordId: string,
+  data: Omit<TWallet, "user_id">,
+  userId: string,
+) {
   return await walletModel.updateOne(
-    { id: recordId, user_id: data.user_id },
+    { id: recordId, user_id: userId },
     { data },
   );
 }
