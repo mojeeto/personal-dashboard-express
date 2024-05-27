@@ -2,6 +2,7 @@ import { Document, PopulatedDoc, model, Schema } from "mongoose";
 import { ICategory } from "./catergoryModel";
 import { IContact } from "./contactModel";
 import { z } from "zod";
+import { IUser } from "./userModel";
 
 /*
  * Wallet Model
@@ -25,6 +26,7 @@ export type TWallet = {
   category_id: PopulatedDoc<ICategory & Document>;
   contact_id: PopulatedDoc<IContact & Document>;
   forContacts: PopulatedDoc<IContact & Document>[];
+  user_id: PopulatedDoc<IUser & Document>;
 };
 
 export interface IWallet extends Document, TWallet {}
@@ -70,14 +72,22 @@ const WalletSchema = new Schema<IWallet>(
     category_id: {
       type: Schema.Types.ObjectId,
       required: true,
+      ref: "Category",
     },
     contact_id: {
       type: Schema.Types.ObjectId,
       required: true,
+      ref: "Contact",
     },
     forContacts: {
       type: [Schema.Types.ObjectId],
       required: true,
+      ref: "Contact",
+    },
+    user_id: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
     },
   },
   {
