@@ -1,6 +1,10 @@
 import userModel, { IUser, TUser } from "../models/userModel";
 import { createContact } from "./contactRepo";
 
+export async function findUserById(userId: string) {
+  return await userModel.find({ id: userId }).exec();
+}
+
 export async function findUserByEmail(email: string): Promise<IUser | null> {
   return await userModel.findOne({ email }).exec();
 }
