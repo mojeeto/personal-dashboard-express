@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   deleteContact,
   getContact,
+  getContacts,
   patchContact,
   postContact,
 } from "../controllers/contactController";
@@ -12,7 +13,7 @@ import {
 
 const contactRouter = Router();
 
-contactRouter.get("/contacts", getContact);
+contactRouter.get("/contacts", getContacts);
 contactRouter.get("/contact/:id", IdParamValidation, getContact);
 contactRouter.post("/contact", ContactValidation, postContact);
 contactRouter.patch(
