@@ -78,12 +78,19 @@ export const ResgierValidation: BaseMiddleware = async (req, res, next) => {
 
 export const isAuthenticated: BaseMiddleware = async (req, res, next) => {
   try {
-    const { jwt_token } = req.body;
+    const authorization = req.headers["authorization"] || "";
+    if (!authorization)
+      return jsonRes(res, "You are not authorized, Please login first!", {
+        statusCode: 403,
+      });
+    const jwt_token = authorization.split(" ").pop() || "";
     await isAuthenticatedZodObject.parseAsync({ jwt_token });
     // check jwt_token is valid or not
     const user = await isJWTValid(jwt_token);
     if (!user)
-      return jsonRes(res, "JWT token is not valid, Please login first!");
+      return jsonRes(res, "JWT token is not valid, Please try again later!", {
+        statusCode: 403,
+      });
     req.userId = user.id;
     return next();
   } catch (error) {
@@ -243,7 +250,7 @@ export const WalletValidation: BaseMiddleware = async (req, res, next) => {
             message: "Contact is not exists!",
           });
         if (forContacts.length === 0) {
-          ctx.ZodIssueCode({
+          ctx.addIssue({
             code: ZodIssueCode.custom,
             message: "Contact for is required!",
           });
@@ -255,7 +262,7 @@ export const WalletValidation: BaseMiddleware = async (req, res, next) => {
           });
         }
         forContacts.map(async (contactId) => {
-          const fetchContact = await fetchContactById(contactId);
+          const fetchContact = await fetchContactById(contactId, req.userId!);
           if (!fetchContact) {
             ctx.addIssue({
               code: ZodIssueCode.custom,
