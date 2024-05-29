@@ -22,11 +22,11 @@ export const contactZodObject = z
     phoneNumber: z
       .string()
       .trim()
-      .length(10, "PhoneNumber format is not correct!"),
+      .length(11, "PhoneNumber format is not correct!"),
     bankCartNumber: z
       .string()
       .trim()
-      .length(19, "Bank number format is not correct!"),
+      .length(16, "Bank number length must be 16 character(s)."),
   })
   .partial({
     phoneNumber: true,
